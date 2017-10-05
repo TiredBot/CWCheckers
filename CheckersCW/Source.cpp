@@ -1,51 +1,21 @@
-#include <iostream>
+#include "Board.h"
 
-class CheckersBoard
-{
-	
-	CheckersBoard()
-	{
-		turnNumber = 0;
-	}
-
-	int turnNumber;
-	enum CheckerEnum
-	{
-		FreeSpace,//0
-		WteChecker,//1
-		WteKing,//2
-		RedChecker,//3
-		RedKing//4
-	};
-	const CheckerEnum StartingBoard[8][8] = { { FreeSpace, WteChecker, FreeSpace, WteChecker, FreeSpace, WteChecker, FreeSpace, WteChecker },
-											  { WteChecker, FreeSpace, WteChecker, FreeSpace, WteChecker, FreeSpace, WteChecker, FreeSpace },
-											  { FreeSpace, WteChecker, FreeSpace, WteChecker, FreeSpace, WteChecker, FreeSpace, WteChecker },
-											  { FreeSpace, FreeSpace, FreeSpace, FreeSpace, FreeSpace, FreeSpace, FreeSpace, FreeSpace },
-											  { FreeSpace, FreeSpace, FreeSpace, FreeSpace, FreeSpace, FreeSpace, FreeSpace, FreeSpace },
-											  { RedChecker, FreeSpace, RedChecker, FreeSpace, RedChecker, FreeSpace, RedChecker, FreeSpace },
-											  { FreeSpace, RedChecker, FreeSpace, RedChecker, FreeSpace, RedChecker, FreeSpace, RedChecker },
-											  { RedChecker, FreeSpace, RedChecker, FreeSpace, RedChecker, FreeSpace, RedChecker, FreeSpace }
-											};
-
-	CheckerEnum CurrentBoardState[8][8] = { { FreeSpace, WteChecker, FreeSpace, WteChecker, FreeSpace, WteChecker, FreeSpace, WteChecker },
-											{ WteChecker, FreeSpace, WteChecker, FreeSpace, WteChecker, FreeSpace, WteChecker, FreeSpace },
-											{ FreeSpace, WteChecker, FreeSpace, WteChecker, FreeSpace, WteChecker, FreeSpace, WteChecker },
-											{ FreeSpace, FreeSpace, FreeSpace, FreeSpace, FreeSpace, FreeSpace, FreeSpace, FreeSpace },
-											{ FreeSpace, FreeSpace, FreeSpace, FreeSpace, FreeSpace, FreeSpace, FreeSpace, FreeSpace },
-											{ RedChecker, FreeSpace, RedChecker, FreeSpace, RedChecker, FreeSpace, RedChecker, FreeSpace },
-											{ FreeSpace, RedChecker, FreeSpace, RedChecker, FreeSpace, RedChecker, FreeSpace, RedChecker },
-											{ RedChecker, FreeSpace, RedChecker, FreeSpace, RedChecker, FreeSpace, RedChecker, FreeSpace }
-										};
-	void clearBoard()
-	{
-		for (int i = 0; i < 8; i++)
-		{
-			for (int j = 0; j < 8; j++)
-				this->CurrentBoardState[i][j] = FreeSpace;
-		}
-	}
-
-
-
-
+CheckerEnum StartingBoardState[8][8] = {//This is hear for the moment as I cant initialise this inside the class
+{ UnusedSpace, WteChecker, UnusedSpace, WteChecker, UnusedSpace, WteChecker, UnusedSpace, WteChecker },
+{ WteChecker, UnusedSpace, WteChecker, UnusedSpace, WteChecker, UnusedSpace, WteChecker, UnusedSpace },
+{ UnusedSpace, WteChecker, UnusedSpace, WteChecker, UnusedSpace, WteChecker, UnusedSpace, WteChecker },
+{ FreeSpace, UnusedSpace, FreeSpace, UnusedSpace, FreeSpace, UnusedSpace, FreeSpace, UnusedSpace },
+{ UnusedSpace, FreeSpace, UnusedSpace, FreeSpace, UnusedSpace, FreeSpace, UnusedSpace, FreeSpace },
+{ RedChecker, UnusedSpace, RedChecker, UnusedSpace, RedChecker, UnusedSpace, RedChecker, UnusedSpace },
+{ UnusedSpace, RedChecker, UnusedSpace, RedChecker, UnusedSpace, RedChecker, UnusedSpace, RedChecker },
+{ RedChecker, UnusedSpace, RedChecker, UnusedSpace, RedChecker, UnusedSpace, RedChecker, UnusedSpace }
 };
+
+int main(int argc, char** argv)
+{
+	CheckersBoard b;
+	b.copyArrayInto(StartingBoardState,b.CurrentBoardState);//using this with the Starting BoardStateAbove for the time being
+	b.PrintBoard();
+	getchar();
+	
+}

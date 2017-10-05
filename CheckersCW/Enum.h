@@ -1,6 +1,16 @@
 #ifndef ENUM_H_GUARD
 #define ENUM_H_GUARD
 
+struct Coord
+{
+	int x, y;
+	Coord();
+	Coord(int X, int Y)
+	{
+		x = X;
+		y = Y;
+	}
+};
 enum CheckerEnum
 {
 	FreeSpace,//0

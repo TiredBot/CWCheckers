@@ -17,5 +17,11 @@ int main(int argc, char** argv)
 	b.copyArrayInto(StartingBoardState,b.CurrentBoardState);//using this with the Starting BoardStateAbove for the time being
 	b.PrintBoard();
 	getchar();
+	bool a = 1;
+
+	while (a)
+	{
+	
+	}
 	
 }

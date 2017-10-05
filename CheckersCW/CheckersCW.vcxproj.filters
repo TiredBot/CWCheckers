@@ -29,5 +29,8 @@
     <ClInclude Include="Enum.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CheckerPiece.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

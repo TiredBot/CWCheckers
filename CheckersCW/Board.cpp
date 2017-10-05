@@ -152,10 +152,25 @@ CheckerEnum CheckersBoard::WinnerFound()//Assess board for winner. If found retu
 			return WteChecker;
 		else
 			return UnusedSpace;//If no winner return unused space
-		/*Will be expanded further to assess board for other winning state, enemy cannot make a move*/
+		/*Will be expanded further to assess board for other winning state,i.e enemy cannot make a move*/
 	}
 }
 
+bool CheckersBoard::isValidMove(CheckerEnum CurrentTurnColour, Coord StartingCoord, Coord RequestedCoord)
+{
+	if (CurrentTurnColour == RedChecker)//If RedCHecker Check the sqaures Above and to its left, right
+	{
+		if (this->CurrentBoardState[StartingCoord.x - 1][StartingCoord.y - 1] == FreeSpace ||
+			this->CurrentBoardState[StartingCoord.x - 1][StartingCoord.y + 1] == FreeSpace)
+				return true;
+	}
+}
+void CheckersBoard::makeMove()//if move has been marked as valid, execute it
+/*Only to be called after move is validated, call isValideMove. After move is made check for 
+other checkers that must be taken during the move.*/
+{
+
+}
 CheckersBoard::CheckersBoard()
 {
 

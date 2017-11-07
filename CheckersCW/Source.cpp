@@ -7,7 +7,9 @@ int main(int argc, char** argv)
 	//b.resetBoard();
 	//b.copyArrayInto(StartingBoardState,b.CurrentBoardState);//using this with the Starting BoardStateAbove for the time being
 	b.printBoard();
-	std::cout << b.movement[0].x << " " << b.movement[0].y << "|" << b.movement[1].x << " " << b.movement[1].y << std::endl;
+	
+	 std::vector<Move> x = b.getValidMoves();
+	
 	getchar();
 	
 

@@ -3,7 +3,7 @@
 #include <iostream>
 #include <vector>
 
-enum CheckerEnum
+const enum CheckerEnum 
 {
 	FreeSpace,//0
 	WteChecker,//1
@@ -32,14 +32,19 @@ struct Coord
 	};
 };
 
-struct Moves
+struct Move
 {
 	CheckerEnum PieceType;
-	Moves(CheckerEnum piece)
+	Move(CheckerEnum piece)
 	{
 		PieceType = piece;
 	}
 	std::vector<std::pair<Coord,Coord>> PosibleMoves;//First coord is origin of piece, 2nd is destination
+	std::vector<std::pair<Coord, Coord>> PosibleJumps;
+	int score = 0;
+	static const int MakeKing = 10;
+	static const int TakeKing = 5;
+	static const int TakePiece = 2;
 };
 
 
@@ -54,13 +59,24 @@ public:
 	
 	void printBoard();
 	void resetBoard();
-	std::vector<Coord> getPiecesWithValidMoves();
-	std::vector<Moves> generateCurrentPlayerMoves();
+	std::vector<Move> getValidMoves();
+	CheckerEnum inspectSpace(Coord square);
 	//Function that returns what kind of peice is at a Coord on the board; This can then be used withni the get Valid Moves function
 	//Function that returns if a true if a piece can make a jump to take a piece
+
 	CheckersBoard();
 	~CheckersBoard();
+	enum CheckerEnum
+{
+	FreeSpace,//0
+	WteChecker,//1
+	WteKing,//2
+	RedChecker,//3
+	RedKing,//4
+	UnusedSpace//5
 };
+};
+
 
 
 

@@ -1,27 +1,14 @@
-#include "Board.h"
-
-CheckerEnum StartingBoardState[8][8] = {//This is hear for the moment as I cant initialise this inside the class
-{ UnusedSpace, WteChecker, UnusedSpace, WteChecker, UnusedSpace, WteChecker, UnusedSpace, WteChecker },
-{ WteChecker, UnusedSpace, WteChecker, UnusedSpace, WteChecker, UnusedSpace, WteChecker, UnusedSpace },
-{ UnusedSpace, WteChecker, UnusedSpace, WteChecker, UnusedSpace, WteChecker, UnusedSpace, WteChecker },
-{ FreeSpace, UnusedSpace, FreeSpace, UnusedSpace, FreeSpace, UnusedSpace, FreeSpace, UnusedSpace },
-{ UnusedSpace, FreeSpace, UnusedSpace, FreeSpace, UnusedSpace, FreeSpace, UnusedSpace, FreeSpace },
-{ RedChecker, UnusedSpace, RedChecker, UnusedSpace, RedChecker, UnusedSpace, RedChecker, UnusedSpace },
-{ UnusedSpace, RedChecker, UnusedSpace, RedChecker, UnusedSpace, RedChecker, UnusedSpace, RedChecker },
-{ RedChecker, UnusedSpace, RedChecker, UnusedSpace, RedChecker, UnusedSpace, RedChecker, UnusedSpace }
-};
+#include "CheckersBoard.h"
 
 int main(int argc, char** argv)
 {
-	CheckersBoard b;
-	b.copyArrayInto(StartingBoardState,b.CurrentBoardState);//using this with the Starting BoardStateAbove for the time being
-	b.PrintBoard();
-	getchar();
-	bool a = 1;
-
-	while (a)
-	{
+	CheckersBoard b = CheckersBoard();
 	
-	}
+	//b.resetBoard();
+	//b.copyArrayInto(StartingBoardState,b.CurrentBoardState);//using this with the Starting BoardStateAbove for the time being
+	b.printBoard();
+	getchar();
+	std::cout << b.movement[1].x << " " << b.movement[1].y << "|" << b.movement[2].x << " " << b.movement[2].y << std::endl;
+
 	
 }

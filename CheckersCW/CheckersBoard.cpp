@@ -30,7 +30,7 @@ const CheckerEnum CheckersBoard::FreshBoard[8][8] = { { UnusedSpace, WteChecker,
 															RedKing,//4
 															UnusedSpace//5*/
 CheckerEnum CurrentGameBoard[8][8];
-Coord movement[2] = { Coord(-1, 1), Coord(1, 1) };//Take these numbers at minus for red movement
+Coord movement[2] = { Coord(-1, 1), Coord(1, 1) };//Take these numbers times negative for red movement
 
 void CheckersBoard::printBoard()
 {
@@ -57,25 +57,46 @@ void CheckersBoard::resetBoard()
 
 std::vector<Coord> CheckersBoard::getPiecesWithValidMoves() //Thinking about passing back somethign else with the coords of pieces that can move
 {
-	if (this->playerTurn)//If white turn check for white pieces that can move
+	std::vector<Coord> MoveablePieces;
+	if (this->playerTurn ==false)//If white turn check for white pieces that can move
 	{
-		std::vector<Coord> MoveablePieces;
-		
+		for (int i = 0; i < 8; ++i)
+		{
+			for (int j = 0; j < 8; ++j)
+			{
+				if (this->CurrentGameBoard[i][j] == WteChecker)//if current piece is white piece test it's movemnet to see if movement is possible
+				{
+					for (int m = 0; m < 2; ++m)//Loop to check both movements
+					{
+						if (this->CurrentGameBoard[i + this->movement[m].x][j +this->movement[m].y]==FreeSpace)
+						{
+							MoveablePieces.push_back(Coord(i, j));
+						}
+					}
+				}
+			}
+		}//End of White logic
 	} 
+	//if (){}//redlogic
+
+	return MoveablePieces;
 }
 
-std::vector<Moves> CheckersBoard::generateCurrentPlayerMoves()
+
+
+/*std::vector<Moves> CheckersBoard::generateCurrentPlayerMoves()
 {
 	//For Coords were pieces can move - calls function that returns vector of coords
 	if (this->playerTurn)//If White turn
 	{
 		//Call function that returns all white pieces that can move
-
+		std::vector<Coord> moveablePieces = CheckersBoard::getPiecesWithValidMoves();
 		/*if()//IF any of the pieces can jump Continue to work with them. Player must make a jump and take a piece
 		{
 
 		}
-		*/
+		
 	}
 	
 }
+*/

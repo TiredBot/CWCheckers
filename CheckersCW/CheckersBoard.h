@@ -39,7 +39,7 @@ struct Moves
 	{
 		PieceType = piece;
 	}
-	std::vector<Coord> PosibleMoves;
+	std::vector<std::pair<Coord,Coord>> PosibleMoves;//First coord is origin of piece, 2nd is destination
 };
 
 
@@ -56,7 +56,8 @@ public:
 	void resetBoard();
 	std::vector<Coord> getPiecesWithValidMoves();
 	std::vector<Moves> generateCurrentPlayerMoves();
-
+	//Function that returns what kind of peice is at a Coord on the board; This can then be used withni the get Valid Moves function
+	//Function that returns if a true if a piece can make a jump to take a piece
 	CheckersBoard();
 	~CheckersBoard();
 };

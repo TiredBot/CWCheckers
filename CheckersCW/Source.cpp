@@ -57,16 +57,16 @@ int main(int argc, char** argv)
 				for (size_t move = 0; move < m.PossibleJumps.size(); ++move)
 				{
 					std::cout << move + 1 << ". (" << m.PossibleJumps[move].second.x + 1 << "," << m.PossibleJumps[move].second.y + 1 << ")\n";//Print Coord of piece that can Jump
-				}
+				}//This runs more than once even though move = size 1????
 				int userInput;
 				std::cin >> userInput;
 				userInput = userInput - 1;// subtract 1 from input as accessed from zero
 				std::cout << std::endl;
-				Coord StartCoord, EndCoord;
-				StartCoord.x = m.PossibleMoves[userInput].first.x;
-				StartCoord.y = m.PossibleMoves[userInput].first.y;
-				EndCoord.x = m.PossibleMoves[userInput].second.x;
-				EndCoord.y = m.PossibleMoves[userInput].second.y;
+
+				//Crashes here
+				Coord StartCoord = Coord(m.PossibleJumps[userInput].first.x, m.PossibleJumps[userInput].first.y);
+				Coord EndCoord = Coord(m.PossibleJumps[userInput].second.x, m.PossibleJumps[userInput].second.y);
+
 				board.makeJump(StartCoord, EndCoord);
 				board.printBoard();
 			}
@@ -87,12 +87,11 @@ int main(int argc, char** argv)
 				EndCoord.x = m.PossibleMoves[userInput].second.x;
 				EndCoord.y = m.PossibleMoves[userInput].second.y;
 				board.makeMove(StartCoord, EndCoord);
-				board.printBoard();
 			}
+			board.printBoard();
 			board.playerTurn = 1;
 		}
-
-		else if (board.playerTurn == true)
+		else if (board.playerTurn == true)//RED turn
 		{
 			std::vector<Move> CurrentMoveList = board.getValidMoves();
 			std::cout << "Player two's turn!\n";
@@ -120,8 +119,6 @@ int main(int argc, char** argv)
 				EndCoord.y = m.PossibleMoves[userInput].second.y;
 
 				board.makeJump(StartCoord, EndCoord);
-
-				board.printBoard();
 			}
 			else if (m.PossibleMoves.size() > 0 && m.PossibleJumps.size() == 0)//Move logic, works.
 			{
@@ -143,8 +140,10 @@ int main(int argc, char** argv)
 
 				board.makeMove(StartCoord, EndCoord);
 
-				board.printBoard();
+				
 			}
+			board.printBoard();
+			board.playerTurn = 0;
 		}
 	}
 	return 0;

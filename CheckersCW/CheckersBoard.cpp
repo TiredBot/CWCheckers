@@ -741,7 +741,7 @@ void CheckersBoard::makeJump(Coord startCoord, Coord endCoord)
 	CheckerEnum CurrentPiece = this->CurrentGameBoard[startCoord.y][startCoord.x];//first[] = y axis, 2nd = x
 	this->CurrentGameBoard[startCoord.y][startCoord.x] = FreeSpace;
 	this->CurrentGameBoard[endCoord.y][endCoord.x] = CurrentPiece;
-	Coord JumpedPiece = Coord(endCoord.x - startCoord.y, endCoord.y - startCoord.y);
+	Coord JumpedPiece = Coord(endCoord.x - startCoord.x, endCoord.y - startCoord.y);
 	std::cout << endCoord.x - startCoord.x << " " << endCoord.y - startCoord.y;
 }
 
@@ -752,29 +752,13 @@ Move CheckersBoard::Choices(std::vector<Move> ListofMovesperPiece)
 
 	for (size_t i = 0; i < ListofMovesperPiece.size(); ++i)
 	{
-		if (ListofMovesperPiece[i].PossibleJumps.size() == 0 && ListofMovesperPiece[i].PossibleMoves.size() == 0)
-		{
-			std::cout << "No Jumps are possible. Select the Coord of the Friendly Checker that will make a move : \n";
-			for (size_t piece = 0; piece < ListofMovesperPiece.size(); ++piece)
-			{
-				std::cout << piece +1 << ". (" << ListofMovesperPiece[piece].PossibleMoves[0].first.x + 1 << "," << ListofMovesperPiece[piece].PossibleMoves[0].first.y + 1 << ")\n";//Print Coord of piece that can Move
-			}
-			std::cout << "Please input the index number beside the Coordinate of the piece you would like to move and press enter: \n";
-			
-			std::cin >> input;
-			input = input -1;// subtract 1 from input as array accessed from zero
-			std::cout << std::endl;
-
-
-
-			return ListofMovesperPiece[input];//returns the moves for the piece at the coord selected
-		}
-		else if (ListofMovesperPiece[i].PossibleJumps.size() >= 1)
+		if (ListofMovesperPiece[i].PossibleJumps.size() >= 1)
 		{
 			std::cout << "Jumps are possible. Select the Friendly Checker that will make the jump :\n";
 			for (size_t jumps = 0; jumps < ListofMovesperPiece.size(); ++jumps)
 			{
-				std::cout << jumps +1 << ". (" << ListofMovesperPiece[i].PossibleJumps[0].first.x << "," << ListofMovesperPiece[i].PossibleJumps[0].first.y << ")\n";//Print currrent location of pieces that have a jump move available
+				if(ListofMovesperPiece[jumps].PossibleJumps.size() != 0)
+					std::cout << jumps +1 << ". (" << ListofMovesperPiece[jumps].PossibleJumps[0].first.x +1 << "," << ListofMovesperPiece[jumps].PossibleJumps[0].first.y +1 << ")\n";//Print currrent location of pieces that have a jump move available
 			}
 			std::cout << "Please input the index number beside the Coordinate of the Checker that will move and press enter: \n";
 
@@ -782,6 +766,23 @@ Move CheckersBoard::Choices(std::vector<Move> ListofMovesperPiece)
 			input = input - 1;// subtract 1 from input as array accessed from zero
 			std::cout << std::endl;
 			return ListofMovesperPiece[input];
+		}
+		else if (ListofMovesperPiece[i].PossibleJumps.size() == 0 && ListofMovesperPiece[i].PossibleMoves.size() != 0)
+		{
+			std::cout << "No Jumps are possible. Select the Coord of the Friendly Checker that will make a move : \n";
+			for (size_t piece = 0; piece < ListofMovesperPiece.size(); ++piece)
+			{
+				std::cout << piece + 1 << ". (" << ListofMovesperPiece[piece].PossibleMoves[0].first.x + 1 << "," << ListofMovesperPiece[piece].PossibleMoves[0].first.y + 1 << ")\n";//Print Coord of piece that can Move
+			}
+			std::cout << "Please input the index number beside the Coordinate of the piece you would like to move and press enter: \n";
+
+			std::cin >> input;
+			input = input - 1;// subtract 1 from input as array accessed from zero
+			std::cout << std::endl;
+
+
+
+			return ListofMovesperPiece[input];//returns the moves for the piece at the coord selected
 		}
 	}
 }

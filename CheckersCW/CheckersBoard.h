@@ -40,13 +40,17 @@ struct Move
 	std::vector<std::vector<Coord>> Routes;
 	bool MustJump;
 	int score = 0;
-	static const int MakeKing = 10;
 	bool canKing;
+
+	static const int MakeKing = 10;
 	static const int TakeKing = 5;
 	static const int TakeChecker = 2;
+	static const int ToEdge = 1;
+
 	void clearLists();
 	void clearNonJumpsIfJumpsExist();
-	void printChoices(std::vector<Move> ListofMoves);
+	
+	bool isEmptyMove();
 	
 };
 
@@ -65,11 +69,15 @@ public:
 	void ChangeMovementDirection();//function to multiply the  moment[1,2] y coord by -1
 	void printBoard();
 	void resetBoard();
+	void dropEmptyMoves(std::vector<Move> x);
 	std::vector<Move> getValidMoves();
+	void makeMove(Coord startCoord, Coord endCoord);
+	void makeJump(Coord startCoord, Coord endCoord);
 	
 	//Function that returns what kind of peice is at a Coord on the board; This can then be used withni the get Valid Moves function
 	//Function that returns if a true if a piece can make a jump to take a piece
 
+	Move Choices(std::vector<Move> ListofMovesperPiece);//Displays available moves to the user and returns move that is picked by the user
 
 
 	CheckersBoard();
@@ -77,6 +85,10 @@ public:
 
 };
 
+class AI
+{
+
+};
 
 
 

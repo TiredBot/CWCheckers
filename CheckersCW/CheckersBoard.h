@@ -79,16 +79,14 @@ public:
 
 	Move Choices(std::vector<Move> ListofMovesperPiece);//Displays available moves to the user and returns move that is picked by the user
 
+	Move CanJumpAgain(Coord LandingCoord, CheckerEnum PieceType);
 
 	CheckersBoard();
 	~CheckersBoard();
 
 };
 
-class AI
-{
 
-};
 
 
 

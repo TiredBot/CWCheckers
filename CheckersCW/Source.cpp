@@ -69,8 +69,8 @@ int main(int argc, char** argv)
 				board.makeJump(StartCoord, EndCoord, m.move,userInput);
 				board.printBoard();
 				
-
-				while (board.canJumpAgain(EndCoord, m.move).first == true)//this returns a pair, first true if another Jump can be made
+				bool AnotherOne = board.canJumpAgain(EndCoord, m.move).first;
+				while ( AnotherOne == true)//this returns a pair, first true if another Jump can be made
 				{//When you can Jump again prompt for choice and then make Jump
 					std::vector<Move> JumpTemp;
 					Move a = board.canJumpAgain(EndCoord, m.move).second;

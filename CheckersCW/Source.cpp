@@ -34,13 +34,12 @@ void PrintMoves(std::vector<Move> TurnMoves)//THIS IS JUST TO DEBUG - NOT IN USE
 int main(int argc, char** argv)
 {
 	CheckersBoard board = CheckersBoard();
-	int playFlag = true;
+	bool playFlag = true;
 	board.printBoard();
 	
 
 	while (playFlag)
 	{
-		board.playerTurn = 0;
 		if (board.playerTurn == false)//White Checkers turn
 		{
 			std::cout << "Player one's turn!\n";
@@ -50,7 +49,7 @@ int main(int argc, char** argv)
 				CurrentMoveList[PieceWithMove].clearNonJumpsIfJumpsExist();
 			}
 			Move m = board.Choices(CurrentMoveList);
-
+			
 			if (m.PossibleJumps.size() >= 1)
 			{
 				std::cout << "Please input the number beside the Coordinate of the square you would like to JUMP to: \n";
@@ -63,11 +62,11 @@ int main(int argc, char** argv)
 				userInput = userInput - 1;// subtract 1 from input as accessed from zero
 				std::cout << std::endl;
 
-				//Crashes here
+			
 				Coord StartCoord = Coord(m.PossibleJumps[userInput].first.x, m.PossibleJumps[userInput].first.y);
 				Coord EndCoord = Coord(m.PossibleJumps[userInput].second.x, m.PossibleJumps[userInput].second.y);
 
-				board.makeJump(StartCoord, EndCoord);
+				board.makeJump(StartCoord, EndCoord, m,userInput);
 				board.printBoard();
 			}
 			else if (m.PossibleMoves.size() > 0 && m.PossibleJumps.size() == 0)//Move logic, works.
@@ -81,11 +80,9 @@ int main(int argc, char** argv)
 				std::cin >> userInput;
 				userInput = userInput - 1;// subtract 1 from input as accessed from zero
 				std::cout << std::endl;
-				Coord StartCoord, EndCoord;
-				StartCoord.x = m.PossibleMoves[userInput].first.x;
-				StartCoord.y = m.PossibleMoves[userInput].first.y;
-				EndCoord.x = m.PossibleMoves[userInput].second.x;
-				EndCoord.y = m.PossibleMoves[userInput].second.y;
+				Coord StartCoord = Coord(m.PossibleMoves[userInput].first.x, m.PossibleMoves[userInput].first.y);
+				Coord EndCoord = Coord(m.PossibleMoves[userInput].second.x, m.PossibleMoves[userInput].second.y);
+
 				board.makeMove(StartCoord, EndCoord);
 			}
 			board.printBoard();
@@ -100,6 +97,7 @@ int main(int argc, char** argv)
 				CurrentMoveList[PieceWithMove].clearNonJumpsIfJumpsExist();
 			}
 			Move m = board.Choices(CurrentMoveList);
+
 			if (m.PossibleJumps.size() >= 1)
 			{
 				std::cout << "Please input the number beside the Coordinate of the square you would like to JUMP to: \n";
@@ -112,15 +110,16 @@ int main(int argc, char** argv)
 				userInput = userInput - 1;// subtract 1 from input as accessed from zero
 				std::cout << std::endl;
 
-				Coord StartCoord, EndCoord;
-				StartCoord.x = m.PossibleMoves[userInput].first.x;
-				StartCoord.y = m.PossibleMoves[userInput].first.y;
-				EndCoord.x = m.PossibleMoves[userInput].second.x;
-				EndCoord.y = m.PossibleMoves[userInput].second.y;
+				Coord StartCoord = Coord(m.PossibleJumps[userInput].first.x, m.PossibleJumps[userInput].first.y);
+				Coord EndCoord = Coord(m.PossibleJumps[userInput].second.x, m.PossibleJumps[userInput].second.y);
 
-				board.makeJump(StartCoord, EndCoord);
+
+				board.makeJump(StartCoord, EndCoord, m, userInput);
+			//	if(board.CanJumpAgain())
+
+				
 			}
-			else if (m.PossibleMoves.size() > 0 && m.PossibleJumps.size() == 0)//Move logic, works.
+			else if (m.PossibleMoves.size() > 0 && m.PossibleJumps.size() == 0)//Move logic. Complete I think
 			{
 				std::cout << "Please input the number beside the Coordinate of the square you would like to MOVE to: \n";
 				for (size_t move = 0; move < m.PossibleMoves.size(); ++move)
@@ -132,11 +131,10 @@ int main(int argc, char** argv)
 				userInput = userInput - 1;// subtract 1 from input as accessed from zero
 				std::cout << std::endl;
 
-				Coord StartCoord, EndCoord;
-				StartCoord.x = m.PossibleMoves[userInput].first.x;
-				StartCoord.y = m.PossibleMoves[userInput].first.y;
-				EndCoord.x = m.PossibleMoves[userInput].second.x;
-				EndCoord.y = m.PossibleMoves[userInput].second.y;
+				Coord StartCoord = Coord(m.PossibleMoves[userInput].first.x, m.PossibleMoves[userInput].first.y);
+				Coord EndCoord = Coord(m.PossibleMoves[userInput].second.x, m.PossibleMoves[userInput].second.y);
+
+
 
 				board.makeMove(StartCoord, EndCoord);
 

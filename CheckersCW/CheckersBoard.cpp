@@ -96,9 +96,9 @@ const CheckerEnum CheckersBoard::FreshBoard[8][8] = {
 	{ UnusedSpace, RedChecker, UnusedSpace, RedChecker, UnusedSpace, RedChecker, UnusedSpace, RedChecker },
 	{ RedChecker, UnusedSpace, RedChecker, UnusedSpace, RedChecker, UnusedSpace, RedChecker, UnusedSpace },
 	{ UnusedSpace, RedChecker, UnusedSpace, RedChecker, UnusedSpace, FreeSpace, UnusedSpace, RedChecker },
-	{ FreeSpace, UnusedSpace, FreeSpace, UnusedSpace, RedChecker, UnusedSpace, FreeSpace, UnusedSpace },
-	{ UnusedSpace, FreeSpace, UnusedSpace, WteChecker, UnusedSpace, FreeSpace, UnusedSpace, FreeSpace },
-	{ WteChecker, UnusedSpace, FreeSpace, UnusedSpace, WteChecker, UnusedSpace, WteChecker, UnusedSpace },
+	{ FreeSpace, UnusedSpace, FreeSpace, UnusedSpace, FreeSpace, UnusedSpace, FreeSpace, UnusedSpace },
+	{ UnusedSpace, FreeSpace, UnusedSpace, RedChecker, UnusedSpace, FreeSpace, UnusedSpace, FreeSpace },
+	{ WteChecker, UnusedSpace, WteChecker, UnusedSpace, WteChecker, UnusedSpace, WteChecker, UnusedSpace },
 	{ UnusedSpace, WteChecker, UnusedSpace, WteChecker, UnusedSpace, WteChecker, UnusedSpace, WteChecker },
 	{ WteChecker, UnusedSpace, WteChecker, UnusedSpace, WteChecker, UnusedSpace, WteChecker, UnusedSpace }
 };
@@ -122,20 +122,20 @@ Move::Move()
 {
 	score = 0;
 	MustJump = 0;
-	canKing = 0;
+	//canKing = 0;
 }
 Move::~Move()
 {
 	score = 0;
 	MustJump = 0;
-	canKing = 0;
+//	canKing = 0;
 }
 Move::Move(CheckerEnum piece)
 {
 	PieceType = piece;
 	score = 0;
 	MustJump = 0;
-	canKing = 0;
+	//canKing = 0;
 }
 
 void Move::clearNonJumpsIfJumpsExist()//If jump exists, clears moves and MustJump = true, else = false
@@ -188,7 +188,7 @@ void CheckersBoard::printBoard()
 			
 			if (this->CurrentGameBoard[i][j] == UnusedSpace || this->CurrentGameBoard[i][j] == FreeSpace)
 			{
-				std::cout << "# "; 
+				std::cout << "- "; 
 			}
 			else if (this->CurrentGameBoard[i][j] == WteChecker)
 			{
@@ -266,6 +266,7 @@ std::vector<Move> CheckersBoard::getValidMoves()//Returns list of valid moves fo
 									{
 										temp.score += Move::TakeChecker;
 										temp.PossibleJumps.push_back(std::make_pair(Coord(row, column), Coord(row + this->NormalMovement[m].x * 2, column + this->NormalMovement[m].y * 2)));
+										temp.JumpedPiecesCoords.push_back(Coord(row + this->NormalMovement[m].x, column + this->NormalMovement[m].y));
 										temp.MustJump = true;
 									}
 								}
@@ -330,6 +331,7 @@ std::vector<Move> CheckersBoard::getValidMoves()//Returns list of valid moves fo
 									{
 										temp.score += Move::TakeChecker;
 										temp.PossibleJumps.push_back(std::make_pair(Coord(row, column), Coord(row + this->NormalMovement[m].x * 2, column + this->NormalMovement[m].y * 2)));
+										temp.JumpedPiecesCoords.push_back(Coord(row + this->NormalMovement[m].x, column + this->NormalMovement[m].y));
 										temp.MustJump = true;
 									}
 								}
@@ -342,6 +344,7 @@ std::vector<Move> CheckersBoard::getValidMoves()//Returns list of valid moves fo
 									{
 										temp.score += Move::TakeKing;
 										temp.PossibleJumps.push_back(std::make_pair(Coord(row, column), Coord(row + this->NormalMovement[m].x * 2, column + this->NormalMovement[m].y * 2)));
+										temp.JumpedPiecesCoords.push_back(Coord(row + this->NormalMovement[m].x, column + this->NormalMovement[m].y));
 										temp.MustJump = true;
 									}
 								}
@@ -394,15 +397,15 @@ std::vector<Move> CheckersBoard::getValidMoves()//Returns list of valid moves fo
 								//If friendly checker or King in the way do nothing
 							}
 
-							else if (this->CurrentGameBoard[(column + this->NormalMovement[m].y)][(row + this->NormalMovement[m].x)] == WteChecker)//else if JUMPING RED
+							else if (this->CurrentGameBoard[(column + this->NormalMovement[m].y)][(row + this->NormalMovement[m].x)] == WteChecker)
 							{//if next space is enemy checker then check space after it.
-								//BOUNDS CHECKING LANDING ISNT OUT OF RANGE OF BOARD goes here
 								if (column + (this->NormalMovement[m].x * 2) < 8 && column + (this->NormalMovement[m].x * 2) >= 0 && row + (this->NormalMovement[m].y * 2) < 8 && row + (this->NormalMovement[m].y) >= 0)//edfafsfafsfasf
 								{
 									if (this->CurrentGameBoard[(column + this->NormalMovement[m].y * 2)][(row + this->NormalMovement[m].x * 2)] == FreeSpace)//IF picec behind red checker is clear add to possible JUMP
 									{
 										temp.score += Move::TakeChecker;
 										temp.PossibleJumps.push_back(std::make_pair(Coord(row, column), Coord(row + this->NormalMovement[m].x * 2, column + this->NormalMovement[m].y * 2)));
+										temp.JumpedPiecesCoords.push_back(Coord(row + this->NormalMovement[m].x, column + this->NormalMovement[m].y));
 										temp.MustJump = true;
 									}
 								}
@@ -416,6 +419,7 @@ std::vector<Move> CheckersBoard::getValidMoves()//Returns list of valid moves fo
 										temp.score += Move::TakeKing;
 										temp.PossibleJumps.push_back(std::make_pair(Coord(row, column), Coord(row + this->NormalMovement[m].x * 2, column + this->NormalMovement[m].y * 2)));
 										temp.MustJump = true;
+										temp.JumpedPiecesCoords.push_back(Coord(row + this->NormalMovement[m].x, column + this->NormalMovement[m].y));
 									}
 								}
 							}
@@ -736,19 +740,32 @@ void CheckersBoard::makeMove(Coord startCoord, Coord endCoord)
 	this->CurrentGameBoard[startCoord.y][startCoord.x] = FreeSpace;
 	this->CurrentGameBoard[endCoord.y][endCoord.x] = CurrentPiece;
 }
-void CheckersBoard::makeJump(Coord startCoord, Coord endCoord)
+void CheckersBoard::makeJump(Coord startCoord, Coord endCoord, Move m,int index)
 {
 	CheckerEnum CurrentPiece = this->CurrentGameBoard[startCoord.y][startCoord.x];//first[] = y axis, 2nd = x
-	this->CurrentGameBoard[startCoord.y][startCoord.x] = FreeSpace;
-	this->CurrentGameBoard[endCoord.y][endCoord.x] = CurrentPiece;
-	Coord JumpedPiece = Coord(endCoord.x - startCoord.x, endCoord.y - startCoord.y);
-	std::cout << endCoord.x - startCoord.x << " " << endCoord.y - startCoord.y;
+	this->CurrentGameBoard[startCoord.y][startCoord.x] = FreeSpace;//Staring location is made a free space
+	this->CurrentGameBoard[m.JumpedPiecesCoords[index].y][m.JumpedPiecesCoords[index].x] = FreeSpace;//Jumped piece is made to freespace
+	if (CurrentPiece == WteChecker || CurrentPiece == WteKing)
+	{
+		++redGrave;
+	}
+	else
+		++wteGrave;
+	this->CurrentGameBoard[endCoord.y][endCoord.x] = CurrentPiece;//Set landing coord to the piece jumping, stored earlier
 }
 
 Move CheckersBoard::Choices(std::vector<Move> ListofMovesperPiece)
 {
 	int input = -1;
-	bool JumpExists = 0;
+	bool JumpExists = false;
+
+	for (size_t i = 0; i < ListofMovesperPiece.size(); ++i)
+	{
+		if (ListofMovesperPiece[i].PossibleJumps.size() > 0)
+		{
+			JumpExists = true;
+		}
+	}
 
 	for (size_t i = 0; i < ListofMovesperPiece.size(); ++i)
 	{
@@ -757,7 +774,7 @@ Move CheckersBoard::Choices(std::vector<Move> ListofMovesperPiece)
 			std::cout << "Jumps are possible. Select the Friendly Checker that will make the jump :\n";
 			for (size_t jumps = 0; jumps < ListofMovesperPiece.size(); ++jumps)
 			{
-				if(ListofMovesperPiece[jumps].PossibleJumps.size() != 0)
+				if (ListofMovesperPiece[jumps].PossibleJumps.size() != 0)
 					std::cout << jumps +1 << ". (" << ListofMovesperPiece[jumps].PossibleJumps[0].first.x +1 << "," << ListofMovesperPiece[jumps].PossibleJumps[0].first.y +1 << ")\n";//Print currrent location of pieces that have a jump move available
 			}
 			std::cout << "Please input the index number beside the Coordinate of the Checker that will move and press enter: \n";
@@ -767,7 +784,7 @@ Move CheckersBoard::Choices(std::vector<Move> ListofMovesperPiece)
 			std::cout << std::endl;
 			return ListofMovesperPiece[input];
 		}
-		else if (ListofMovesperPiece[i].PossibleJumps.size() == 0 && ListofMovesperPiece[i].PossibleMoves.size() != 0)
+		else if (!JumpExists && ListofMovesperPiece[i].PossibleMoves.size() != 0)
 		{
 			std::cout << "No Jumps are possible. Select the Coord of the Friendly Checker that will make a move : \n";
 			for (size_t piece = 0; piece < ListofMovesperPiece.size(); ++piece)
@@ -779,10 +796,31 @@ Move CheckersBoard::Choices(std::vector<Move> ListofMovesperPiece)
 			std::cin >> input;
 			input = input - 1;// subtract 1 from input as array accessed from zero
 			std::cout << std::endl;
-
-
-
 			return ListofMovesperPiece[input];//returns the moves for the piece at the coord selected
 		}
 	}
+}
+
+bool CheckersBoard::wteWin()
+{
+	if (redGrave == 12)
+		return true;
+	else 
+		return false;
+}
+bool CheckersBoard::redWin()
+{
+	if (wteGrave == 12)
+		return true;
+	else
+		return false;
+}
+
+
+bool node::hasChildren()
+{
+	if (this->children.size() == 0)
+		return false;
+	else
+		return true;
 }

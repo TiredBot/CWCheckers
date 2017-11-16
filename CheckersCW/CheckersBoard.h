@@ -5,7 +5,7 @@
 #include <list>
 #include <stack>
 
-enum CheckerEnum 
+enum CheckerEnum
 {
 	FreeSpace,//0
 	WteChecker,//1
@@ -39,7 +39,6 @@ struct Move
 	//CURRENTLY WORKING ON THIS
 	std::vector<std::pair<Coord, Coord>> PossibleMoves;//First coord is origin of piece, 2nd is destination
 	std::vector<std::pair<Coord, Coord>> PossibleJumps;
-	std::vector<std::pair<Coord, Coord>> ConfirmedJumps;
 	std::vector<std::vector<Coord>> Routes;
 	bool MustJump;
 	int score = 0;
@@ -49,7 +48,7 @@ struct Move
 	static const int TakeChecker = 2;
 	static const int ToEdge = 1;
 
-	std::vector<Coord> JumpedPiecesCoords;//Loop through this at the end of each turn if a jump is made. Remove pieces at each location
+	Coord JumpedPieceCoord;//Loop through this at the end of each turn if a jump is made. Remove pieces at each location
 	int JumpsThisTurn;
 	void clearLists();
 	void clearNonJumpsIfJumpsExist();
@@ -57,8 +56,19 @@ struct Move
 	bool isEmptyMove();
 	
 };
+struct indexMove//Pass  back from choices so that the index can be kept for further jumps
+{
+	int index;
+	Move move;
+	indexMove();
 
+	indexMove(int Index, Move m)
+	{
+		this->index = Index;
+		this->move = m;
+	}
 
+};
 class CheckersBoard
 {
 public:
@@ -87,13 +97,14 @@ public:
 	void undo();
 	
 
-	Move Choices(std::vector<Move> ListofMovesperPiece);//Displays available moves to the user and returns move that is picked by the user
+	indexMove Choices(std::vector<Move> ListofMovesperPiece);//Displays available moves to the user and returns move that is picked by the user
 	Move CanJumpAgain(Coord LandingCoord, CheckerEnum PieceType);
 	bool canJumpAgain1(Coord startingCoord, Move move);
 	bool wteWin();
 	bool redWin();//Check these at end of each players turn
 	CheckersBoard();
 	~CheckersBoard();
+	std::pair<bool, Move> canJumpAgain(Coord LandingCoord, Move move);
 };
 
 
@@ -106,6 +117,9 @@ struct node
 	bool AIturn;
 
 };
+
+
+
 /*
 void scoreFunction(CheckersBoard board, int depth)
 {

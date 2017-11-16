@@ -42,20 +42,20 @@ int main(int argc, char** argv)
 	{
 		if (board.playerTurn == false)//White Checkers turn
 		{
-			std::cout << "Player one's turn!\n";
+			std::cout << "Player 1s turn\n";
 			std::vector<Move> CurrentMoveList = board.getValidMoves();
 			for (size_t PieceWithMove = 0; PieceWithMove < CurrentMoveList.size(); ++PieceWithMove)
 			{
 				CurrentMoveList[PieceWithMove].clearNonJumpsIfJumpsExist();
 			}
-			Move m = board.Choices(CurrentMoveList);
+			indexMove m = board.Choices(CurrentMoveList);
 			
-			if (m.PossibleJumps.size() >= 1)
+			if (m.move.PossibleJumps.size() >= 1)
 			{
 				std::cout << "Please input the number beside the Coordinate of the square you would like to JUMP to: \n";
-				for (size_t move = 0; move < m.PossibleJumps.size(); ++move)
+				for (size_t move = 0; move < m.move.PossibleJumps.size(); ++move)
 				{
-					std::cout << move + 1 << ". (" << m.PossibleJumps[move].second.x + 1 << "," << m.PossibleJumps[move].second.y + 1 << ")\n";//Print Coord of piece that can Jump
+					std::cout << move + 1 << ". (" << m.move.PossibleJumps[move].second.x + 1 << "," << m.move.PossibleJumps[move].second.y + 1 << ")\n";//Print Coord of piece that can Jump
 				}//This runs more than once even though move = size 1????
 				int userInput;
 				std::cin >> userInput;
@@ -63,25 +63,52 @@ int main(int argc, char** argv)
 				std::cout << std::endl;
 
 			
-				Coord StartCoord = Coord(m.PossibleJumps[userInput].first.x, m.PossibleJumps[userInput].first.y);
-				Coord EndCoord = Coord(m.PossibleJumps[userInput].second.x, m.PossibleJumps[userInput].second.y);
+				Coord StartCoord = Coord(m.move.PossibleJumps[userInput].first.x, m.move.PossibleJumps[userInput].first.y);
+				Coord EndCoord = Coord(m.move.PossibleJumps[userInput].second.x, m.move.PossibleJumps[userInput].second.y);
 
-				board.makeJump(StartCoord, EndCoord, m,userInput);
+				board.makeJump(StartCoord, EndCoord, m.move,userInput);
 				board.printBoard();
+				
+
+				while (board.canJumpAgain(EndCoord, m.move).first == true)//this returns a pair, first true if another Jump can be made
+				{//When you can Jump again prompt for choice and then make Jump
+					std::vector<Move> JumpTemp;
+					Move a = board.canJumpAgain(EndCoord, m.move).second;
+					JumpTemp.push_back(a);
+					indexMove JumpMove = board.Choices(JumpTemp);//Returns Move and index chosen related to move picked from PossibleJumps 
+					
+					StartCoord = JumpTemp[0].PossibleJumps[JumpMove.index].first;
+					EndCoord = JumpTemp[0].PossibleJumps[JumpMove.index].second;
+
+					board.makeJump(StartCoord, EndCoord, JumpMove.move, JumpMove.index);
+
+					board.printBoard();
+					
+					m.move = board.canJumpAgain(EndCoord, m.move).second;
+					/*std::vector<Move> AnotherOne;//Temp, required as choices() takes a Vector of Move
+					AnotherOne.push_back(board.canJumpAgain(EndCoord, m.move).second);//Push back move that is returned from above function
+					//Above pushes the Possible Jump on to AnoterOne
+					std::cout << "Further ";
+					m = board.Choices(AnotherOne);
+					board.makeJump(EndCoord,m.move.PossibleJumps[m.index].second,m.move,m.index);*/
+					JumpTemp.clear();
+					
+				}
+				
 			}
-			else if (m.PossibleMoves.size() > 0 && m.PossibleJumps.size() == 0)//Move logic, works.
+			else if (m.move.PossibleMoves.size() > 0 && m.move.PossibleJumps.size() == 0)//Move logic, works.
 			{
 				std::cout << "Please input the number beside the Coordinate of the square you would like to MOVE to: \n";
-				for (size_t move = 0; move < m.PossibleMoves.size(); ++move)
+				for (size_t move = 0; move < m.move.PossibleMoves.size(); ++move)
 				{
-					std::cout << move + 1 << ". FROM(" << m.PossibleMoves[move].first.x + 1 << ", " << m.PossibleMoves[move].first.y + 1 << ") TO: (" << m.PossibleMoves[move].second.x + 1 << "," << m.PossibleMoves[move].second.y + 1 << ")\n";//Print Coord of piece that can Jump
+					std::cout << move + 1 << ". FROM(" << m.move.PossibleMoves[move].first.x + 1 << ", " << m.move.PossibleMoves[move].first.y + 1 << ") TO: (" << m.move.PossibleMoves[move].second.x + 1 << "," << m.move.PossibleMoves[move].second.y + 1 << ")\n";//Print Coord of piece that can Jump
 				}
 				int userInput;
 				std::cin >> userInput;
 				userInput = userInput - 1;// subtract 1 from input as accessed from zero
 				std::cout << std::endl;
-				Coord StartCoord = Coord(m.PossibleMoves[userInput].first.x, m.PossibleMoves[userInput].first.y);
-				Coord EndCoord = Coord(m.PossibleMoves[userInput].second.x, m.PossibleMoves[userInput].second.y);
+				Coord StartCoord = Coord(m.move.PossibleMoves[userInput].first.x, m.move.PossibleMoves[userInput].first.y);
+				Coord EndCoord = Coord(m.move.PossibleMoves[userInput].second.x, m.move.PossibleMoves[userInput].second.y);
 
 				board.makeMove(StartCoord, EndCoord);
 			}
@@ -90,55 +117,75 @@ int main(int argc, char** argv)
 		}
 		else if (board.playerTurn == true)//RED turn
 		{
+			std::cout << "Player 2s turn\n";
 			std::vector<Move> CurrentMoveList = board.getValidMoves();
-			std::cout << "Player two's turn!\n";
 			for (size_t PieceWithMove = 0; PieceWithMove < CurrentMoveList.size(); ++PieceWithMove)
 			{
 				CurrentMoveList[PieceWithMove].clearNonJumpsIfJumpsExist();
 			}
-			Move m = board.Choices(CurrentMoveList);
+			indexMove m = board.Choices(CurrentMoveList);
 
-			if (m.PossibleJumps.size() >= 1)
+			if (m.move.PossibleJumps.size() >= 1)
 			{
 				std::cout << "Please input the number beside the Coordinate of the square you would like to JUMP to: \n";
-				for (size_t move = 0; move < m.PossibleJumps.size(); ++move)
+				for (size_t move = 0; move < m.move.PossibleJumps.size(); ++move)
 				{
-					std::cout << move + 1 << ". (" << m.PossibleJumps[move].second.x + 1 << "," << m.PossibleJumps[move].second.y + 1 << ")\n";//Print Coord of piece that can Jump
-				}
+					std::cout << move + 1 << ". (" << m.move.PossibleJumps[move].second.x + 1 << "," << m.move.PossibleJumps[move].second.y + 1 << ")\n";//Print Coord of piece that can Jump
+				}//This runs more than once even though move = size 1????
 				int userInput;
 				std::cin >> userInput;
 				userInput = userInput - 1;// subtract 1 from input as accessed from zero
 				std::cout << std::endl;
 
-				Coord StartCoord = Coord(m.PossibleJumps[userInput].first.x, m.PossibleJumps[userInput].first.y);
-				Coord EndCoord = Coord(m.PossibleJumps[userInput].second.x, m.PossibleJumps[userInput].second.y);
+
+				Coord StartCoord = Coord(m.move.PossibleJumps[userInput].first.x, m.move.PossibleJumps[userInput].first.y);
+				Coord EndCoord = Coord(m.move.PossibleJumps[userInput].second.x, m.move.PossibleJumps[userInput].second.y);
+
+				board.makeJump(StartCoord, EndCoord, m.move, userInput);
+				board.printBoard();
 
 
-				board.makeJump(StartCoord, EndCoord, m, userInput);
-			//	if(board.CanJumpAgain())
+				while (board.canJumpAgain(EndCoord, m.move).first == true)//this returns a pair, first true if another Jump can be made
+				{//When you can Jump again prompt for choice and then make Jump
+					std::vector<Move> JumpTemp;
+					Move a = board.canJumpAgain(EndCoord, m.move).second;
+					JumpTemp.push_back(a);
+					indexMove JumpMove = board.Choices(JumpTemp);//Returns Move and index chosen related to move picked from PossibleJumps 
 
-				
+					StartCoord = JumpTemp[0].PossibleJumps[JumpMove.index].first;
+					EndCoord = JumpTemp[0].PossibleJumps[JumpMove.index].second;
+
+					board.makeJump(StartCoord, EndCoord, JumpMove.move, JumpMove.index);
+
+					board.printBoard();
+
+					m.move = board.canJumpAgain(EndCoord, m.move).second;
+					/*std::vector<Move> AnotherOne;//Temp, required as choices() takes a Vector of Move
+					AnotherOne.push_back(board.canJumpAgain(EndCoord, m.move).second);//Push back move that is returned from above function
+					//Above pushes the Possible Jump on to AnoterOne
+					std::cout << "Further ";
+					m = board.Choices(AnotherOne);
+					board.makeJump(EndCoord,m.move.PossibleJumps[m.index].second,m.move,m.index);*/
+					JumpTemp.clear();
+
+				}
+
 			}
-			else if (m.PossibleMoves.size() > 0 && m.PossibleJumps.size() == 0)//Move logic. Complete I think
+			else if (m.move.PossibleMoves.size() > 0 && m.move.PossibleJumps.size() == 0)//Move logic, works.
 			{
 				std::cout << "Please input the number beside the Coordinate of the square you would like to MOVE to: \n";
-				for (size_t move = 0; move < m.PossibleMoves.size(); ++move)
+				for (size_t move = 0; move < m.move.PossibleMoves.size(); ++move)
 				{
-					std::cout << move + 1 << ". FROM(" << m.PossibleMoves[move].first.x + 1 << ", " << m.PossibleMoves[move].first.y + 1 << ") TO: (" << m.PossibleMoves[move].second.x + 1 << "," << m.PossibleMoves[move].second.y + 1 << ")\n";//Print Coord of piece that can Jump
+					std::cout << move + 1 << ". FROM(" << m.move.PossibleMoves[move].first.x + 1 << ", " << m.move.PossibleMoves[move].first.y + 1 << ") TO: (" << m.move.PossibleMoves[move].second.x + 1 << "," << m.move.PossibleMoves[move].second.y + 1 << ")\n";//Print Coord of piece that can Jump
 				}
 				int userInput;
 				std::cin >> userInput;
 				userInput = userInput - 1;// subtract 1 from input as accessed from zero
 				std::cout << std::endl;
-
-				Coord StartCoord = Coord(m.PossibleMoves[userInput].first.x, m.PossibleMoves[userInput].first.y);
-				Coord EndCoord = Coord(m.PossibleMoves[userInput].second.x, m.PossibleMoves[userInput].second.y);
-
-
+				Coord StartCoord = Coord(m.move.PossibleMoves[userInput].first.x, m.move.PossibleMoves[userInput].first.y);
+				Coord EndCoord = Coord(m.move.PossibleMoves[userInput].second.x, m.move.PossibleMoves[userInput].second.y);
 
 				board.makeMove(StartCoord, EndCoord);
-
-				
 			}
 			board.printBoard();
 			board.playerTurn = 0;
@@ -146,3 +193,6 @@ int main(int argc, char** argv)
 	}
 	return 0;
 }
+
+//You stopped when multipple jumps was fucked in all the ways
+//I hate this course

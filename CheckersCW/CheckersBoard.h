@@ -3,6 +3,7 @@
 #include <iostream>
 #include <vector>
 #include <list>
+#include <stack>
 
 enum CheckerEnum 
 {
@@ -34,7 +35,8 @@ struct Move
 	Move(CheckerEnum piece);
 	~Move();
 
-	Move canJumpAgain(Coord startingCoord, Move &move);//CURRENTLY WORKING ON THIS
+	//Move canJumpAgain(Coord startingCoord, Move move);
+	//CURRENTLY WORKING ON THIS
 	std::vector<std::pair<Coord, Coord>> PossibleMoves;//First coord is origin of piece, 2nd is destination
 	std::vector<std::pair<Coord, Coord>> PossibleJumps;
 	std::vector<std::pair<Coord, Coord>> ConfirmedJumps;
@@ -55,6 +57,7 @@ struct Move
 	bool isEmptyMove();
 	
 };
+
 
 class CheckersBoard
 {
@@ -78,14 +81,19 @@ public:
 	//Function that returns what kind of peice is at a Coord on the board; This can then be used withni the get Valid Moves function
 	//Function that returns if a true if a piece can make a jump to take a piece
 
-	Move Choices(std::vector<Move> ListofMovesperPiece);//Displays available moves to the user and returns move that is picked by the user
+	std::stack<std::pair<Coord, Coord>> GameHistory;
+	std::stack<std::pair<Coord, Coord>> UndoStack;
+	std::stack<std::pair<Coord, Coord>> RedoStack;
+	void undo();
+	
 
+	Move Choices(std::vector<Move> ListofMovesperPiece);//Displays available moves to the user and returns move that is picked by the user
 	Move CanJumpAgain(Coord LandingCoord, CheckerEnum PieceType);
+	bool canJumpAgain1(Coord startingCoord, Move move);
 	bool wteWin();
-	bool redWin();
+	bool redWin();//Check these at end of each players turn
 	CheckersBoard();
 	~CheckersBoard();
-
 };
 
 
